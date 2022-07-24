@@ -10,12 +10,17 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({server});
 
 wss.on('connection', function connection(ws){
-    ws.on('message', function incoming(data) {
+    ws.on('message', (data) =>{
+
+        const outbound = JSON.stringify(data); 
+
         wss.clients.forEach(function each(client) {
-            if(client != ws && client.readyState == WebSocket.OPEN){
-                client.send(data);
+            if(client !== ws && client.readyState === WebSocket.OPEN){
+                client.send(outbound);
             }
         })
+
+        console.log('received: %s', data);
     })
 });
 
